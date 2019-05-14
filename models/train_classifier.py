@@ -23,7 +23,14 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 
 
 def load_data(database_filepath):
-
+    """
+    Loads data from database
+    Args:
+        database_filepath: path to database
+    Returns:
+        X(DataFrame) : feature
+        Y(DataFrame) : labels
+    """
     # load data from database
     engine = create_engine('sqlite:///' + database_filepath)
     df = pd.read_sql_table('dstr_rspns_data', con=engine)
@@ -37,7 +44,13 @@ def load_data(database_filepath):
 
 
 def tokenize(text):
-
+    """
+    Tokenizes a given text.
+    Args:
+        text: text string
+    Returns:
+        (str[]): array of clean tokens
+    """
     # normalize first
     text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
 
@@ -60,7 +73,7 @@ def tokenize(text):
 
 
 def build_model():
-
+    """Builds classification model """
     pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer=tokenize)),
         ('tfidf', TfidfTransformer()),
@@ -76,14 +89,26 @@ def build_model():
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
-
+    """
+    Evaluate the model against a test dataset
+    Args:
+        model: Trained model
+        X_test: Test features
+        Y_test: Test labels
+        category_names: String array of category names
+    """
     y_pred = model.predict(X_test)
     for i in range(0, len(category_names)):
         print(classification_report(Y_test.values[:, i], y_pred[:, i]))
 
 
 def save_model(model, model_filepath):
-
+    """
+    Save the model to a Python pickle
+    Args:
+        model: Trained model
+        model_filepath: Path where to save the model which we will access in run.py later
+    """
     with open(model_filepath, 'wb') as file:
         pickle.dump(model, file)
 

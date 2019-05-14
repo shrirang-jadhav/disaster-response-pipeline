@@ -7,7 +7,14 @@ from sqlalchemy import create_engine
 
 
 def load_data(messages_filepath, categories_filepath):
-
+    """
+    Loads the messages and categories datasets from the specified filepaths
+    Args:
+        messages_filepath: Filepath to the messages dataset
+        categories_filepath: Filepath to the categories dataset
+    Returns:
+        df(DataFrame) : Merged Pandas dataframe
+    """
     messages = pd.read_csv(messages_filepath)
     categories = pd.read_csv(categories_filepath)
     
@@ -17,7 +24,13 @@ def load_data(messages_filepath, categories_filepath):
 
 
 def clean_data(df):
-
+    """
+    Cleans the merged dataset
+    Args:
+        df: Merged pandas dataframe
+    Returns:
+        df(DataFrame) : Cleaned dataframe
+    """
     # create a dataframe of the 36 individual category columns
     categories = df['categories'].str.split(pat=';',expand=True)
     
@@ -53,7 +66,12 @@ def clean_data(df):
 
 
 def save_data(df, database_filename):
-
+    """
+    Saves clean dataset into an sqlite database
+    Args:
+        df:  Cleaned dataframe
+        database_filename: Name of the database file
+    """
     engine = create_engine('sqlite:///'+ database_filename)
     df.to_sql('dstr_rspns_data',engine,if_exists='replace',index=False)
  
